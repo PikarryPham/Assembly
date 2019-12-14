@@ -1,0 +1,37 @@
+#include <iostream>
+using namespace std;
+int mul_10(int n){
+	__asm{
+		mov eax, n
+		shl eax, 1; eax = n * 2
+		mov ebx, eax
+		shl eax, 2; EAX = N * 8
+		add eax, ebx; EAX = N*10
+	}
+}
+int div_10(int n){
+	return n / 10;
+}
+int mulntimes(int num, int n){
+	return num*n;
+}
+int main(){
+	int number;
+	cout << "Enter the number: \t";
+	cin >> number;
+	int n;
+	cout << "Enter the times: \t";
+	cin >> n;
+	__asm{
+		push n; vi tinh chat cua ngan xep nen ta can push tham so thu hai vao
+			push number
+			call mulntimes
+			pop eax
+			pop ebx
+			mov number, eax;ke duoc luu trong eax
+	}
+	cout << mulntimes(number,n) << endl;
+	
+	system("pause");
+	return 0;
+}
