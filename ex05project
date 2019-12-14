@@ -3,12 +3,11 @@
 .data 
     msg db 0ah,0dh,"The current time is: $"
     num db 10d
-    ;endline db 10,13 ==> db 0ah,0dh
-    msg1 db 0ah,0dh,"ENTER THE FIRST NUMBER: $"
+    msg1 db 0ah,0dh,"ENTER THE FIRST NUMBER: $"     ;endline db 10,13 ==> db 0ah,0dh
     msg2 db 0ah, 0dh,"ENTER THE SECOND NUMBER: $"
     msg3 db 0ah, 0dh,"RESULT: $"
     msg4 db 0ah,0dh,"Can't divide by 0 $"
-    msg5 db 0ah,0dh,"Nhap vao so ke tiep: $"
+    msg5 db 0ah,0dh,"Enter the number in range from 0 to 25 $"
     a db 0
     b db 0
     q db 0
@@ -55,31 +54,26 @@ compare02:
     jmp capon
     ;======================numon========================
 numon:
-	;mov ah,2
-	;mov dl,'N'
-	;int 21h
-	
-	;mov ah,4ch
-	;int 21h
-	call in2soa
+	call @khoitao
+	call @xuatmsg
+	call in2soa ;nhapsoa
     call @khoitao
     call @xuatmsg
-    call in2sob
+    call in2sob ;nhapsob
     call @ktxuongdong
     call @inhvuong
-    
-   
-    
-in2sob proc
+	mov ah,4ch
+	int 21h
+in2sob proc ; nhap vao so b 
     
     
     ;nhap so dau tien
     mov ah,8
     int 21h
     
-    @repeatb:
+    @repeatb: ;lap lai viec so sanh xem ki tu moi nhap vao co phai nho hon 0 hoac lon hon 9 hay k, neu co thi lap lai k thi in ra man hinh
     
-    cmp al,'0'
+    cmp al,'0' 
     jb @nextdigit2 ;neu no nho hon 0 thi yeu cau nhap lai
     
     cmp al,'9'
@@ -123,54 +117,42 @@ in2sob proc
    in2sob endp    
 in2soa proc    
     
-    ;save gia tri vao trong thanh ghi
-    push si 
+    push si ;save gia tri vao trong thanh ghi
     push bx
-    
     ;nhap ki tu dau tien
     mov ah,8
     int 21h
-    
     @repeat2:
-    
     cmp al,'0'
     jb @nextdigit ;neu no nho hon 0 thi yeu cau nhap lai
-    
     cmp al,'9'
     ja @nextdigit ;neu no lon hon 9 thi yeu cau nhap lai
-    
-    ;nhap dung, hien thi so da nhap
-    mov ah,2
+    mov ah,2 ;nhap dung, hien thi so da nhap
     mov dl,al
     int 21h
     ;doi thanh tri va cat vao SI
     and al,0Fh
     cbw
     mov si,ax
-    
     ;tinh sum = bx = bx * 10 + si
     mov ax,10
     mul bx ; dx:ax = bx*10 (dx=0>   ;bx = sum = 0
     mov bx,si
     add bx,ax
-    
     cmp bx,25
     ja @exit
-    ;nhan tiep, neu la enter thi ket thuc
-    @nextdigit:
-    
+	;ja in2soa
+    @nextdigit: ;nhan tiep, neu la enter thi ket thuc
     mov ah,8
     int 21h
     cmp al,13 ;ki tu enter
     jne @repeat2
-    
     ;nhap enter ==> ket thuc
     mov ax,bx ; ax chua ket qua
     ;or cx,cx
     mov a,al
     
     mov cl,a
-    
     pop bx
     pop si
     ret
@@ -201,21 +183,15 @@ in2soa endp
     je @exit
     push cx ; cx = i 
     mov cx, bx ; cx = bx = j
-
     L2:
     Mov dl, '*'
     mov ah,2
     int 21h
-    loop L2 ;cu moi lan goi den ham loop, bien j--
-    ;dung loop l2 khi cx = 0 ==> chuyen den xuong duong in endline
-
+    loop L2 ;cu moi lan goi den ham loop, bien j-- ;;dung loop l2 khi cx = 0 ==> chuyen den xuong duong in endline
     call @ktxuongdong
-
     pop cx  ;lay ra lai gia tri i truoc do de tru di mot don vi sau moi lan lap L1
-
     LOOP L1
-    ; pop bien i truoc do de i--
-    ;loop L1
+    ;pop bien i truoc do de i-- va loop L1
     ret
 @inhvuong endp
 @exit: 
@@ -447,7 +423,7 @@ compare:
         
     ret
     timing endp
-    xuattime proc
+    xuattime proc	;ham xuat time theo dinh dang 00:00:00
         
         push bx
         push ax            
@@ -460,8 +436,6 @@ compare:
 
         ;Transform digit to digitals 
         add ax,3030h
-
-
 
         mov bx, ax         ;Save for later 
         mov dl, bl
