@@ -1,0 +1,124 @@
+.model small
+.stack 100h  
+.data 
+    msg db 0ah,0dh,"Ki tu nhap vao la $"
+    a db 0
+    b db 0 
+    tmp db 0 
+    num db 10d
+    msg1 db 0ah,0dh,"Ket qua la $"
+.code
+      
+mov ax, @data
+mov ds,ax
+
+
+mov ah,9
+lea dx,msg
+int 21h
+
+
+call insob
+call nhan10
+
+;mov ah,9
+;lea dx,msg1
+;int 21h
+
+call xuatso
+
+mov ah,4ch
+int 21h 
+
+
+insob proc
+    in2sob proc
+    
+    
+    ;nhap so dau tien
+    mov ah,8
+    int 21h
+    
+    @repeatb:
+    
+    cmp al,'0'
+    jb @nextdigit2 ;neu no nho hon 0 thi yeu cau nhap lai
+    
+    cmp al,'9'
+    ja @nextdigit2 ;neu no lon hon 9 thi yeu cau nhap lai
+    
+    ;nhap dung, hien thi so da nhap
+    mov ah,2
+    mov dl,al
+    int 21h
+    ;doi thanh tri va cat vao SI
+    and al,0Fh
+    cbw
+    mov si,ax
+    
+    ;tinh sum = bx = bx * 10 + si
+    mov ax,10
+    mul bx ; dx:ax = bx*10 (dx=0>   ;bx = sum = 0
+    mov bx,si
+    add bx,ax
+    
+    cmp bx,25
+    ja @exit
+    ;nhan tiep, neu la enter thi ket thuc
+    @nextdigit2:
+    
+    mov ah,8
+    int 21h
+    cmp al,13 ;ki tu enter
+    jne @repeatb
+    
+    ;nhap enter ==> ket thuc
+    mov ax,bx ; ax chua ket qua
+    ;or cx,cx
+    mov b,al
+    mov bl,b
+    ;pop dx
+    ;pop cx
+    
+    
+    ret
+in2sob endp
+@exit: 
+    mov ah,4ch
+    int 21h
+
+nhan10 proc
+    mov cl,bl ;gan cl = bl
+    shl cl,1  ;gan cl = cl * 2
+    shl bl,3  ;gan bl = bl * 3
+    add bl,cl
+    mov dl,bl
+    mov al,dl
+    ret
+nhan10 endp
+xuatso proc
+	mov	BX, 10
+	mov	CX, 0
+LayChuSo:
+	mov	DX, 0
+	div	BX
+	push    DX
+	inc	CX
+	mov tmp,al
+	
+	cmp	tmp, 0
+	jne	LayChuSo
+
+	mov	AH, 2
+XuatChuSo:
+	pop	DX
+	add	DL, '0'
+	int	21h
+	loop XuatChuSo
+	ret
+xuatso endp
+
+
+
+
+    
