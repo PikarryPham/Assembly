@@ -23,7 +23,9 @@ int main(){
 	cout << "Enter the times: \t";
 	cin >> n;
 	__asm{
-		push n; vi tinh chat cua ngan xep nen ta can push tham so thu hai vao
+		push n; vi tinh chat cua ngan xep nen ta can push tham so thu hai vao TRUOC
+		;TINH CHAT CUA STACK: PUSH B, PUSH A VAO ROI POP A, POP B
+		;PUSH CAC PARAMETER THEO THU TU TU PHAI --> TRAI
 			push number
 			call mulntimes
 			pop eax
