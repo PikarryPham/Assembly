@@ -1,0 +1,40 @@
+.model small
+.stack 100h
+.data
+   num db 10
+.code
+   mov ax,@data
+   mov ds,ax
+   mov bl, 87 ;thanh ghi bl luu 1 con so di tu 0 ->255
+   cmp bl, 200
+   jae xuatkitu_2
+   cmp bl, 100
+   jae xuatkitu_1
+   cmp bl,0
+   jae xuatkitu
+   mov ah,4ch
+   int 21h
+   xuatkitu_2:
+        mov ah,2
+        mov dl, '2'
+        int 21h
+        sub bl,200
+   xuatkitu_1:
+        mov ah,2
+        mov dl, '1'
+        int 21h
+        sub bl,100
+   xuatkitu:
+        mov ax,bx 
+        div num
+        add al,'0'
+        mov num,ah
+        add num,'0'
+        mov ah,2
+        mov dl, al
+        int 21h
+        mov ah,2
+        mov dl, num
+        int 21h
+
+end
