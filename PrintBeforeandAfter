@@ -1,0 +1,58 @@
+.MODEL SMALL
+.STACK 100H
+.data
+    msg db "Nhap vao mot ki tu bat ki: $" 
+    msg1 db 0ah,0dh,"result: $"
+    a db 0
+.code
+   call @khoitao
+   call @nhapvaokt
+   call @xuatmsgkq
+   call @ktsau
+   call @xuatmsgkq
+   call @kttruoc
+   call @exit
+@khoitao proc
+    mov ax,@data
+    mov ds,ax
+    ret
+@khoitao endp
+@exit proc
+    mov ah,4ch
+    int 21h
+    ret
+@exit endp
+@nhapvaokt proc
+    
+    mov ah,9
+    lea dx,msg
+    int 21h
+    
+    
+    mov ah,1
+    int 21h
+    mov a,al
+    mov bl,a
+    ret
+@nhapvaokt endp
+@xuatmsgkq proc
+    mov ah,9
+    lea dx,msg1
+    int 21h
+    ret
+@xuatmsgkq endp
+@ktsau proc
+   add a,1
+   mov ah,2
+   mov dl,a
+   int 21h
+   ret
+@ktsau endp
+@kttruoc proc
+   sub bl,1
+   mov ah,2
+   mov dl,bl
+   int 21h
+   ret
+@kttruoc endp
+end
