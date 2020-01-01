@@ -1,0 +1,90 @@
+;Nhap vao mot ki tu bat ki
+;Neu no la so thi in ra so do cong them 1
+;Neu la ki tu thuong --> xuat ra chu in hoa
+;Neu la ki tu hoa -->xuat ra chu in thuong
+
+.model small
+.stack 100h
+.data
+    msg db "Nhap vao mot ki tu bat ki: $"
+    a db 0
+    msg1 db 0ah,0dh,"Result: $"
+.code
+   mov ax, @data
+   mov ds,ax
+   
+   mov ah,9
+   lea dx,msg
+   int 21h
+   
+   mov ah,1
+   int 21h
+   mov a,al
+   
+   ;neu nhu ki tu nhap vao la 1
+   
+   cmp a,97
+   jae @lower
+   
+   cmp a,65
+   jae @upper
+   
+   call @number
+   mov ah,4ch
+   int 21h
+@lower:
+    call toupper
+    mov ah,4ch
+    int 21h
+@upper:
+    call tolower
+    mov ah,4ch
+    int 21h
+@number proc
+    
+   sub al,48
+   mov bl,al
+   add bl,1
+   mov a,bl
+   
+   mov ah,9
+   lea dx, msg1
+   int 21h
+   
+   ;truoc khi in ra phai cong them 48 de hien thi len man hinh
+   
+   add a,48
+   
+   mov ah,2
+   mov dl,a
+   int 21h
+   ret
+@number endp
+toupper proc
+   sub al,'a' - 'A'
+   mov a, al
+   
+   mov ah,9
+   lea dx,msg1
+   int 21h
+   
+   mov ah,2
+   mov dl,a
+   int 21h
+   ret
+toupper endp
+tolower proc
+   add al,'a' - 'A'
+   mov a, al
+   
+   mov ah,9
+   lea dx,msg1
+   int 21h
+   
+   mov ah,2
+   mov dl,a
+   int 21h
+   ret
+tolower endp
+   
+end 
