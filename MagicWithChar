@@ -86,5 +86,5 @@ tolower proc
    int 21h
    ret
 tolower endp
-   
+;
 end 
